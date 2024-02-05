@@ -5,7 +5,9 @@ This repository contains my notes and code for the [Data Engineering Zoomcamp](h
 
 <div align="center">
 Fast access to the notes and codes: <br>
+  
 📝 [Notes](https://github.com/byrocuy/dataengineering-zoomcamp/tree/main/Notes) | 
 🔗 [Codes](https://github.com/byrocuy/dataengineering-zoomcamp/tree/main/Codes)
+
 </dic>
 
