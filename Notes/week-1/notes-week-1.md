@@ -14,6 +14,7 @@ Tools and environment used in my local machine are as follows:
   - [1.2. Docker and Docker-Compose](#12-docker-and-docker-compose)
     - [1.2.4 Dockerizing the Ingestion Script](#124-dockerizing-the-ingestion-script)
     - [1.2.5 Running Postgres and pgAdmin with Docker-Compose](#125-running-postgres-and-pgadmin-with-docker-compose)
+    - [1.2.6. SQL Refresher](#126-sql-refresher)
   - [Some Errors I Encountered and the Solutions](#some-errors-i-encountered-and-the-solutions)
 
 
@@ -138,6 +139,8 @@ docker run -it ^
 
 ### 1.2.5 Running Postgres and pgAdmin with Docker-Compose
 
+▶️ [[Video Link](https://www.youtube.com/watch?v=hKI6PkPhpa0&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=12)]
+
 We will create `docker-compose.yml` file to run Postgres and pgAdmin. The configuration is as follows:
 
 ```yml
@@ -183,7 +186,98 @@ Check the database `ny_taxi` and the table `yellow_taxi_data` in the pgAdmin.
 
 Don't forget to stop the running containers by running `docker-compose down` in the CLI.
 
+### 1.2.6. SQL Refresher
+▶️ [[Video Link](https://www.youtube.com/watch?v=QEcps_iskgg&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=10)]
 
+joining yellow taxi data table with the zones lookup table
+
+```sql
+/* INNER JOIN*/
+
+SELECT 
+    tpep_pickup_datetime,
+    tpep_dropoff_datetime,
+    total_amount,
+    CONCAT(zpu."Borough", ' / ', zpu."Zone") as "PU_Location",
+    CONCAT(zdo."Borough", ' / ', zdo."Zone") as "DO_Location"
+FROM 
+    yellow_taxi_data t,
+    zones zpu,
+    zones zdo
+WHERE
+    t."PULocationID" = zpu."LocationID" AND
+    t."DOLocationID" = zdo."LocationID"
+LIMIT 10
+```
+
+Check if there is zone in `yellow_taxi_data` that is not in `zones` table
+
+```sql
+SELECT 
+    tpep_pickup_datetime,
+    tpep_dropoff_datetime,
+    total_amount,
+    "PULocationID",
+    "DOLocationID"
+FROM 
+    yellow_taxi_data t
+WHERE
+    "PULocationID" NOT IN (SELECT "LocationID" FROM zones)
+LIMIT 10
+```
+output: there is None
+
+```sql
+SELECT
+    CAST(tpep_dropoff_datetime AS DATE) as "date",
+    "DOLocationID",
+    COUNT(1) as "count",
+    MAX(total_amount),
+    MAX(passenger_count)
+FROM
+    yellow_taxi_data t
+GROUP BY
+    1, 2
+ORDER BY
+    "count" DESC
+```
+
+## 1.3. Terraform Basics
+### 1.3.1. Terraform Primer
+▶️ [[Video Link](https://www.youtube.com/watch?v=s2bOYDCKl_M&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=11)]
+
+Terraform is an **infrastructure as** code tool that lets you define both cloud and on-prem resources in human-readable configuration files that you can version, reuse, and share. You can then use a consistent workflow to provision and manage all of your infrastructure throughout its lifecycle.
+
+Why use Terraform?
+- simplicity in keeping track of infrastructure
+- Easier collaboration
+- Reproducibility
+- Ensure resources are removed
+
+Terraform is not:
+- does not manage and update code on infrastructure
+- does not give you the ability to change immutable resources
+- not used to manage resources not defined in your terraform files
+
+Key Terraform commands:
+- `init` - get me the providers 
+- `plan`
+- `apply`- do the thing in terraform
+- `destroy` - destruct everything defined in terraform
+
+### 1.3.2. Terraform Basics
+▶️ [[Video Link](https://www.youtube.com/watch?v=Y2ux7gq3Z0o&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=12)]
+
+Setting up service account in Google Cloud Platform (GCP):
+1. Go to the [GCP console](https://console.cloud.google.com/)
+2. Head to IAM & Admin > Service Accounts
+3. Create a new service account, give it a name (e.g. `terraform-runner`) > Continue
+4. Give it a role as `Storage Admin`, add another role as `BigQuery Admin`, lastly, add `Compute Admin` role > Continue  
+**note**: _In real world, you want to limit these permissions._    
+for storage creator, we only need ability to create buckets and destroy. for bigquery, we only need ability to create and destroy datasets and tables.
+5. Skip and click Done
+
+If you need to create additional role, just go to IAM menu and go to your service account and add additional role.
 
 
 # Some Errors I Encountered and the Solutions
