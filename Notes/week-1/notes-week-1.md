@@ -319,7 +319,7 @@ Edit `main.tf' file and add the following code at the end of the file:
 
 ```hcl
 resource "google_storage_bucket" "demo-bucket" {
-  name          = "demo-terraform-bucket"
+  name          = "demo-terraform-bucket" # unique name
   location      = "US"
   force_destroy = true
 
