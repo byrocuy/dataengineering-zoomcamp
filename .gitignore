@@ -4,10 +4,10 @@
 ny_taxi_postgres_data/
 *.csv
 *.db
+*.json
 
 
 .terraform.lcok.hcl
-dataengzoocamp-375210-9858346f4246.json
 terraform.tfstate.backup
 .terraform/
 
