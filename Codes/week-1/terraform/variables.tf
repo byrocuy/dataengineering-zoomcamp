@@ -1,24 +1,39 @@
-locals {
-  data_lake_bucket = "dtc_data_lake"
+variable "credentials" {
+  description = "The path to the GCP credentials file"
+  default     = "./dataengzoocamp-375210-190269feacba.json"
 }
 
-variable "project" {
-  description = "Your GCP Project ID"
+variable "project_id" {
+  description = "The project id"
+  default     = "dataengzoocamp-375210"
 }
 
 variable "region" {
   description = "Region for GCP resources. Choose as per your location: https://cloud.google.com/about/locations"
-  default = "europe-west6"
-  type = string
+  default     = "us-central1"
+}
+
+variable "zone" {
+  description = "The zone"
+  default     = "us-central1-c"
+}
+
+variable "location" {
+  description = "The location for the bucket"
+  default     = "US"
+}
+
+variable "bucket_name" {
+  description = "The bucket name"
+  default     = "demo-terraform-bucket"
+}
+
+variable "bq_dataset_id" {
+  description = "The bigquery dataset id"
+  default     = "demo_dataset"
 }
 
 variable "storage_class" {
-  description = "Storage class type for your bucket. Check official docs for more info."
-  default = "STANDARD"
-}
-
-variable "BQ_DATASET" {
-  description = "BigQeury Dataset that raw data (from GCS) will be written to"
-  type = string
-  default = "trips_data_all"
+  description = "The storage class for the bucket"
+  default     = "STANDARD"
 }
