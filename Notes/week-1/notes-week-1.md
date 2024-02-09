@@ -17,6 +17,7 @@ Tools and environment used in my local machine are as follows:
   - [1.3. Terraform Basics](#13-terraform-basics)
     - [1.3.1. Terraform Primer](#131-terraform-primer)
     - [1.3.2. Terraform Basics (Walkthrough basic operations)](#132-terraform-basics-walkthrough-basic-operations)
+    - [1.3.3. Terraform Variables](#133-terraform-variables)
   - [Some Errors I Encountered and the Solutions](#some-errors-i-encountered-and-the-solutions)
 
 
@@ -337,6 +338,159 @@ resource "google_storage_bucket" "demo-bucket" {
 run `terraform plan` and then `terraform apply` commands in the terminal. This will create a bucket in your GCP project. You can check it in the GCP console.
 
 Now we will destroy the bucket we just created. Simply run `terraform destroy` in the terminal. This will destroy the bucket in your GCP project.
+
+### 1.3.3. Terraform Variables
+
+▶️ [[video link](https://www.youtube.com/watch?v=PBi0hHjLftk&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=14)]
+
+Now we will leverage developing Terraform with variables. With Terraform variables, we don't need to hard code the values in the Terraform file everytime we want to create a new resource. We can use variables to make the code more reusable and easier to maintain. 
+
+For example, instead of hard coding the location of the bucket (e.g. `US`), we can use a variable to define the location, so that if we want to change the location, we only need to change the value of the variable, once.
+
+In the following tutorial, we will create BigQuery Table using Terraform and set it up with variables. 
+
+In the `main.tf` file, add the following code at the end of the file:
+
+```hcl
+resource "google_bigquery_dataset" "demo_dataset" {
+  dataset_id = 'demo_dataset'
+  location   = 'US'
+}
+```
+
+Full code for `main.tf` file:
+
+```hcl
+terraform {
+  required_providers {
+    google = {
+      source = "hashicorp/google"
+      version = "5.15.0"
+    }
+  }
+}
+
+provider "google" {
+  project     = "dataengzoocamp-375210" # put your GCP project id here
+  region      = "us-central1"
+  zone        = "us-central1-c"
+}
+
+resource "google_storage_bucket" "demo-bucket" {
+  name          = "demo-terraform-bucket"
+  location      = "US"
+  force_destroy = true
+
+  lifecycle_rule {
+    condition {
+      age = 1
+    }
+    action {
+      type = "AbortIncompleteMultipartUpload"
+    }
+  }
+}
+
+resource "google_bigquery_dataset" "demo_dataset" {
+  dataset_id = "demo_dataset"
+  location   = "US"
+}
+```
+
+We see that in the above code, we still hardcode some of the values, like the project id, location, region, etc. We can use variables to make the code more reusable and easier to maintain.
+
+First, create a new file `variables.tf` and add variable for every value that we want to make it reusable. For example, in this project we will create variables for project id, region, zone, bucket_name, and bigquery_dataset_id. The code is as follows:
+
+```hcl
+variable "project_id" {
+  description = "The project id"
+  default = "dataengzoocamp-375210" # Replace with your GCP project id
+}
+
+variable "region" {
+  description = "The region"
+  default = "us-central1"
+}
+
+variable "zone" {
+  description = "The zone"
+  default = "us-central1-c"
+}
+
+variable "location" {
+  description = "The location for the bucket"
+  default = "US"
+}
+
+variable "bucket_name" {
+  description = "The bucket name"
+  default = "demo-terraform-bucket"
+}
+
+variable "bq_dataset_id" {
+  description = "The bigquery dataset id"
+  default = "demo_dataset"
+}
+
+variable "gcs_storage_class" {
+  description = "The storage class for the bucket"
+  default = "STANDARD"
+}
+```
+
+You can also add your gcp credentials via terraform variables instead of setting it up in the terminal variable, by adding the following code in the `variables.tf` file:
+
+```hcl
+variable "credentials" {
+  description = "The path to the GCP credentials file"
+  default = "path/to/your/credentials.json"
+}
+```
+
+Then, in the `main.tf` file, replace the hardcoded values with the variables we have created. Example as follows:
+
+```hcl
+terraform {
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = "5.15.0"
+    }
+  }
+}
+
+provider "google" {
+  credentials = file(var.credentials)
+  project     = var.project_id
+  region      = var.region
+  zone        = var.zone
+}
+
+resource "google_storage_bucket" "demo-bucket" {
+  name          = var.bucket_name
+  location      = var.location
+  storage_class = var.storage_class
+  force_destroy = true
+
+  lifecycle_rule {
+    condition {
+      age = 1
+    }
+    action {
+      type = "AbortIncompleteMultipartUpload"
+    }
+  }
+}
+
+resource "google_bigquery_dataset" "demo_dataset" {
+  dataset_id = var.bq_dataset_id
+  location   = var.location
+}
+```
+
+After that, run `terraform plan` and `terraform apply` commands in the terminal. This will create a bucket and bigquery dataset in your GCP project. You can check it in the GCP console that a bucket and bigquery table has been created.
+
+Run `terraform destroy` to destroy the resources we just created. Check in the GCP console that the resources have been destroyed.
 
 
 # Some Errors I Encountered and the Solutions
