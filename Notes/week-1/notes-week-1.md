@@ -492,6 +492,7 @@ After that, run `terraform plan` and `terraform apply` commands in the terminal.
 
 Run `terraform destroy` to destroy the resources we just created. Check in the GCP console that the resources have been destroyed.
 
+That's it for the week 1 notes. Thank you for reading ^^
 
 # Some Errors I Encountered and the Solutions
 
