@@ -492,7 +492,13 @@ After that, run `terraform plan` and `terraform apply` commands in the terminal.
 
 Run `terraform destroy` to destroy the resources we just created. Check in the GCP console that the resources have been destroyed.
 
-That's it for the week 1 notes. Thank you for reading ^^
+## 1.4. Setting Up the Environment
+### 1.4.1. Setting Up the Environment on Google Cloud (Cloud VM + SSH Access)
+### 1.4.2. Using Github Codespaces for the Course
+### 1.4.3. Port Mapping and Networks in Docker
+
+
+That's it for the week 1 notes. Thank you for reading ^^  
 
 # Some Errors I Encountered and the Solutions
 
