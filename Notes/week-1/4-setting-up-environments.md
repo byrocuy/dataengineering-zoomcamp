@@ -1,6 +1,14 @@
 # 1.4. Setting Up the Environment
 ▶️ [Video](https://www.youtube.com/watch?v=ae-CV2KfoN0&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=15)
 
+# Table of Contents
+- [1.4.1. Setting Up the Environment on Google Cloud (Cloud VM + SSH Access)](#141-setting-up-the-environment-on-google-cloud-cloud-vm--ssh-access)
+    - [Installing Anaconda, Docker, and Docker Compose](#installing-anaconda-docker-and-docker-compose)
+    - [Setting Up Visual Studio Code for Remote SSH Connection](#setting-up-visual-studio-code-for-remote-ssh-connection)
+    - [Create table schema from Jupyter Notebook](#create-table-schema-from-jupyter-notebook)
+    - [Running Terraform in GCP](#running-terraform-in-gcp)
+
+
 ## 1.4.1. Setting Up the Environment on Google Cloud (Cloud VM + SSH Access)
 ### Creating and Connecting to a VM Instance 
 - First, we are going to upload our SSH key to the Google Cloud. This is the key that we will use to access the VM. Go to GCP Console, then go to Compute Engine (Enable API if it's your first time) > Metadata > SSH Keys. Add your SSH key there. 
