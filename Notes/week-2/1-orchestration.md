@@ -14,5 +14,3 @@ orchestrator handles:
 - Observability
 - Debugging
 - Compliance/Auditing
-
-## 

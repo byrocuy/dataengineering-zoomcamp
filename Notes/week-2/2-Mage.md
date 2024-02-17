@@ -31,4 +31,28 @@ We will setting up Mage on our local machine.
 - Run `docker-compose build` to build the docker image and start the container using `docker-compose up` command
 - Open your browser and go to `http://localhost:6789` to acces the Mage instance.
 
-## 2.2.3 Building A Simple Pipeline
+## 2.2.3 Configuring Postgres in Mage
+We will configure a Postgres connection in Mage. In Mage, we actually already have default config to connect to a Postgres database, we can see it in our project folder in `io_config.yaml` file. There is `default` profile where it has bunch of different database configurations, like MongoDB, MySQL, Azure, AWS, including PostgreSQL. 
+
+We will create a new profile for our simple Postgres connection.
+- Edit `io_config.yaml` file (you can do it in your IDE or in Mage GUI), and at the bottom of the file, add a new profile `dev` for our Postgres connection:
+
+```yaml
+dev:
+  POSTGRES_CONNECT_TIMEOUT: 10
+  POSTGRES_DBNAME: "{{ env_var('POSTGRES_DBNAME') }}"
+  POSTGRES_SCHEMA: "{{ env_var('POSTGRES_SCHEMA') }}"
+  POSTGRES_USER: "{{ env_var('POSTGRES_USER') }}"
+  POSTGRES_PASSWORD: "{{ env_var('POSTGRES_PASSWORD') }}"
+  POSTGRES_HOST: "{{ env_var('POSTGRES_HOST') }}"
+  POSTGRES_PORT: "{{ env_var('POSTGRES_PORT') }}"
+```
+
+- Save the file and go to Mage GUI, create a new pipeline > choose `Standard (batch)`
+- Create a new Data Loader block and choose SQL, name it `postgres-test`
+- In the created block, change the `connection` to `PostgreSQL`, and change `deafult` to the `dev` profile. 
+    _Note: If you don't see any connection, wait for a few seconds and refresh the page_
+- Write following query to test the connection:
+```sql
+SELECT 1;
+```
