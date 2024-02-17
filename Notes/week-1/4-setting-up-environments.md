@@ -133,7 +133,13 @@ it's happened because we don't have our `service account.json` in that directory
 
 
 ## 1.4.2. Using Github Codespaces for the Course
+▶️ [Video](https://www.youtube.com/watch?v=XOSUt8Ih3zA&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=17)
+
+
 ## 1.4.3. Port Mapping and Networks in Docker
+▶️ [Video](https://www.youtube.com/watch?v=tOr4hTsHOzU&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=16)
+
+That's it for the week 1 notes :)
 
 # Some Errors I Encountered and the Solutions
 ## Cannot connect Visual Studio Code to Remote SSH
