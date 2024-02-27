@@ -1,5 +1,13 @@
 # 2.2 Intro to Mage
 
+## Table of Contents
+- [2.2 Intro to Mage](#22-intro-to-mage)
+  - [Table of Contents](#table-of-contents)
+  - [2.2.1 What is Mage](#221-what-is-mage)
+  - [2.2.2 Configuring Mage](#222-configuring-mage)
+  - [2.2.3 Configuring Postgres in Mage and ETL API to Postgres](#223-configuring-postgres-in-mage-and-etl-api-to-postgres)
+- [Some Errors I Encountered and the Solutions](#some-errors-i-encountered-and-the-solutions)
+
 ## 2.2.1 What is Mage
 an open-source pipeline tool for orchestrating, transforming, and monitoring data.
 
