@@ -1,8 +1,3 @@
-variable "credentials" {
-  description = "The path to the GCP credentials file"
-  default     = "./dataengzoocamp-375210-190269feacba.json"
-}
-
 variable "project_id" {
   description = "The project id"
   default     = "dataengzoocamp-375210"
