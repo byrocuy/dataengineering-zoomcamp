@@ -143,6 +143,34 @@ Now we will try loading data from an API, transform it, and load it to our Postg
 
     ![Check Loaded data in Mage](./img/mage-check-loaded-data.png)
 
+
+# 2.3. Working on GCP with Mage
+
+## 2.3.1. Configuring GCP in Mage
+[[Link Video]](https://www.youtube.com/watch?v=00LP360iYvE&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=23)
+
+We will configure GCP access in Mage. We will use Google Cloud Storage (GCS) as an example.
+- Create a new Service Account in GCP if you haven't already, generate a new key and download the JSON file. Copy the JSON file to the `mage-zoomcamp` directory.
+- Create a GCS bucket and BigQuery Dataset in GCP Console. You can try to create it using Terraform as in the previous week's module.
+- In Mage GUI > File, edit `io_config.yaml` file and replace the Google profile with this:
+
+```yaml
+# Google
+GOOGLE_SERVICE_ACC_KEY_FILEPATH: "/home/src/<your-service-account-key>.json"
+GOOGLE_LOCATION: US # Optional
+```
+
+- Save the file and go to Pipeline, open `test_config` pipeline. Change the Connection to `BigQuery` and set the profile to `Default`. Run the block and check the output if the connection to the BigQuery is successful.
+
+![config-gcp-test](./img/config-gcp-test.png)
+
+Now we will try loading a data from GCS through Mage. 
+- Upload `titanic_clean.csv` file (located in `mage-zoomcamp` directory) to your GCS bucket via GCP Console.
+- In Mage GUI, open `test_config` pipeline and create a new Data Loader block. Choose Python > Google Cloud Storage. Name it as `test_gcs`.
+- Edit the `bucket_name` variable to your GCS bucket name and the `object_key` to `titanic_clean.csv`. Run the block and check the output. Succesful output will show like this:
+
+![config-gcs-test](./img/config-gcs-test.png)
+
 # Some Errors I Encountered and the Solutions
 - When I run the blocks in the pipeline, it occasionally just keep running without any output. I tried to refresh the page but it didn't work. 
     - Solution: I just need to restart the docker compose and it works again. But it's a bit annoying to do it every time it happens. I think it's because of the memory issue, I need to allocate more memory to the docker.
