@@ -97,7 +97,21 @@ Resulting: Brooklyn, Manhattan, and Queens
 ### Q6: Largest Tip
 
 Question:
-For the passengers pickeup up in September 2019 in the zone name `Astoria`, which was the dropoff zone that had the largest tip? We want the name of the zone, not the id.
+For the passengers pickup up in September 2019 in the zone name `Astoria`, which was the dropoff zone that had the largest tip? We want the name of the zone, not the id.
+
+Answer: Astoria
+
+We can query this using the following SQL query:
+```sql
+SELECT z."Zone", SUM(g.tip_amount) AS sum_tip
+FROM green_tripdata g
+JOIN zones z ON g."DOLocationID" = z."LocationID"
+WHERE g.lpep_pickup_datetime >= '2019-09-01' AND g.lpep_pickup_datetime < '2019-10-01'
+AND g."PULocationID" = 7
+GROUP BY z."Zone"
+ORDER BY sum_tip DESC
+```
+
 
 
 ## 3. Terraform
