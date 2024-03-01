@@ -103,3 +103,77 @@ def export_data(data, *args, **kwargs):
 - Run the pipeline and check the output. Check the GCS bucket if the data is successfully loaded. You should see there is `ny_taxi_data` folder and inside it, there are folders for each date. Each data folder contains the parquet file for that date. So if you want to query the data for a specific date, like `SELECT` for a specific date, it will just load the data from that specific folder, not the whole dataset. 
 
 ![mage-api-to-gcs-partitioned-bucket](./img/mage-api-to-gcs-partitioned-bucket.png)
+
+## 2.3.3. Writing ETL pipeline: GCS to BigQuery
+[[Video Link]](https://www.youtube.com/watch?v=JKp_uzM-XsM&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=25)
+
+We will create an ETL pipeline to load our NY taxi data from GCS Bucket to BigQuery. For this to work, we need to have the following blocks:
+1. `Data Loader` block: to load the `ny_taxi_data.parquet` from GCS bucket to Mage
+2. `Data Transformer` block: to transform the data to a desired format. We will standardize the column names
+3. `Data Exporter` block: to export the transformed data to BigQuery
+
+Also note that we have two kinds of ny_taxi_data: a single data file and a partitioned data. The ETL pipeline for loading both data is similar. We just need to adjust the `Data Loader` block to load the data correctly. 
+
+We will load the single data file first:
+- Create a new pipeline and name it as `gcs_to_bigquery`.
+- Create a new Data Loader block and choose Python > Google Cloud Storage. Name it as `load_taxi_gcs`. Replace the `bucket_name` and `object_key` to your GCS bucket name and `ny_taxi_data.parquet` respectively. Run the block and check the output.
+- Create a new Data Transformer block and choose Python > Generic (no template). Name it as `transform_staged_data`. Replace the tranform function with this:
+
+```python
+def transform(data, *args, **kwargs):
+    # Standardize the column names: replace spaces with underscores and convert to lowercase
+    data.columns = (data.columns
+                        .str.replace(" ", "_")
+                        .str.lower()
+    )
+
+    return data
+```
+- Run the code and check the output
+- Finally, we will load the data using the Data Exporter block. Create a new Data Exporter block, choose SQL. Change the connection to `BigQuery` and set the profile to `Default`. Name it as `write_taxi_to_bigquery`.
+    - Leave the `Database` fields empty
+    - Fill the `Schema` field with `ny_taxi`
+    - Fill the `Table` field with `yellow_taxi_data`
+
+- Pay attention to the interpolated table in the data exporter block, there is variable aliases for the data from the previous block. We can use that variable to insert all rows into a table.
+    - Paste this query to load the data to BigQuery:
+    ```sql
+    SELECT * FROM {{ df_1 }}
+    ```
+- Run the pipeline and check the output. Check the BigQuery if the data is successfully loaded.
+
+![mage-gcs-to-bigquery](./img/mage-gcs-to-bigquery.png)
+
+Loaded data in BigQuery:
+
+![mage-gcs-to-bigquery-loaded-data](./img/mage-gcs-to-bigquery-loaded-data.png)
+
+If you want to load using the partitioned data, you can follow the same steps as above. The only difference is in the `Data Loader` block. For the `Data loader` block, instead of using Google Cloud Storage, use Generic (no template) and replace the code with this:
+
+```python
+import pyarrow as pa 
+import pyarrow.parquet as pq 
+import os
+
+if 'data_loader' not in globals():
+    from mage_ai.data_preparation.decorators import data_loader
+if 'test' not in globals():
+    from mage_ai.data_preparation.decorators import test
+
+
+@data_loader
+def load_data(*args, **kwargs):
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/home/src/<your_service_account>.json"
+
+    bucket_name = 'your_bucket_name'
+    folder_name = 'ny_taxi_data'
+    root_path = f'{bucket_name}/{folder_name}'
+
+    gcs = pa.fs.GcsFileSystem()
+    df = pq.ParquetDataset(root_path, filesystem=gcs)
+    
+    return df.read_pandas().to_pandas()
+```
+Don't forget to replace the `service_account.json` and `your_bucket_name` with your own.
+
+Done. There is an additional content in the video to schedule the pipeline and other things that you can just check in the video. 
