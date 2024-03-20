@@ -1,5 +1,11 @@
 # 4. Deploying Mage To GCP
 
+## Table of Contents
+- [4.1. Prerequisites](#41-prerequisites)
+- [4.2. Managing GCP Permissions and Enabling APIs](#42-managing-gcp-permissions-and-enabling-apis)
+- [4.3. Deploying Mage to GCP](#43-deploying-mage-to-gcp)
+
+
 Video links:
 - [Prerequisites](https://www.youtube.com/watch?v=zAwAX5sxqsg&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=28&pp=iAQB)
 - [Managing Permissions](https://www.youtube.com/watch?v=O_H7DCmq2rA&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=29&pp=iAQB)
